@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Student To-Do App</title>
+    <link rel="stylesheet" href="/dashboard.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>📚 My Tasks</h2>
+                <p class="username"><%= username %></p>
+            </div>
+            
+            <nav class="filters">
+                <h3>Filters</h3>
+                <a href="/dashboard?filter=all" class="filter-link <%= currentFilter === 'all' ? 'active' : '' %>">
+                    All Tasks
+                </a>
+                <a href="/dashboard?filter=pending" class="filter-link <%= currentFilter === 'pending' ? 'active' : '' %>">
+                    Pending
+                </a>
+                <a href="/dashboard?filter=completed" class="filter-link <%= currentFilter === 'completed' ? 'active' : '' %>">
+                    Completed
+                </a>
+            </nav>
+            
+            <nav class="categories">
+                <h3>Categories</h3>
+                <a href="/dashboard" class="category-link <%= currentCategory === 'all' ? 'active' : '' %>">
+                    All Categories
+                </a>
+                <a href="/dashboard?category=General" class="category-link <%= currentCategory === 'General' ? 'active' : '' %>">
+                    General
+                </a>
+                <a href="/dashboard?category=Assignment" class="category-link <%= currentCategory === 'Assignment' ? 'active' : '' %>">
+                    Assignment
+                </a>
+                <a href="/dashboard?category=Exam" class="category-link <%= currentCategory === 'Exam' ? 'active' : '' %>">
+                    Exam
+                </a>
+                <a href="/dashboard?category=Reading" class="category-link <%= currentCategory === 'Reading' ? 'active' : '' %>">
+                    Reading
+                </a>
+                <a href="/dashboard?category=Project" class="category-link <%= currentCategory === 'Project' ? 'active' : '' %>">
+                    Project
+                </a>
+            </nav>
+            
+            <a href="/logout" class="logout-btn">Logout</a>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <h1>Task Dashboard</h1>
+                <button class="btn btn-add" onclick="document.querySelector('.modal').style.display='block'">
+                    + Add New Task
+                </button>
+            </header>
+            
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Tasks</h3>
+                    <p class="stat-number"><%= stats.total %></p>
+                </div>
+                <div class="stat-card completed">
+                    <h3>Completed</h3>
+                    <p class="stat-number"><%= stats.completed %></p>
+                </div>
+                <div class="stat-card pending">
+                    <h3>Pending</h3>
+                    <p class="stat-number"><%= stats.pending %></p>
+                </div>
+                <div class="stat-card progress">
+                    <h3>Progress</h3>
+                    <p class="stat-number"><%= stats.percentage %>%</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: <%= stats.percentage %>%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tasks List -->
+            <div class="tasks-container">
+                <% if (todos.length === 0) { %>
+                    <div class="empty-state">
+                        <h2>No tasks yet! 🎉</h2>
+                        <p>Create your first task to get started</p>
+                    </div>
+                <% } else { %>
+                    <% todos.forEach(todo => { %>
+                        <div class="task-card <%= todo.completed ? 'completed' : '' %> priority-<%= todo.priority %>">
+                            <div class="task-header">
+                                <div class="task-checkbox">
+                                    <form action="/toggle/<%= todo.id %>" method="POST" style="display:inline;">
+                                        <input type="checkbox" <%= todo.completed ? 'checked' : '' %> onchange="this.form.submit()">
+                                    </form>
+                                </div>
+                                <div class="task-info">
+                                    <h3 class="task-title"><%= todo.title %></h3>
+                                    <% if (todo.description) { %>
+                                        <p class="task-description"><%= todo.description %></p>
+                                    <% } %>
+                                </div>
+                            </div>
+                            
+                            <div class="task-footer">
+                                <div class="task-meta">
+                                    <span class="badge category"><%= todo.category %></span>
+                                    <span class="badge priority priority-<%= todo.priority %>"><%= todo.priority.toUpperCase() %></span>
+                                    <% if (todo.due_date) { %>
+                                        <span class="badge due-date">📅 <%= new Date(todo.due_date).toLocaleDateString() %></span>
+                                    <% } %>
+                                </div>
+                                <div class="task-actions">
+                                    <a href="/edit/<%= todo.id %>" class="btn btn-sm btn-edit">Edit</a>
+                                    <form action="/delete/<%= todo.id %>" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure?')">
+                                        <button type="submit" class="btn btn-sm btn-delete">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } %>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Add Task Modal -->
+    <div class="modal" id="addTaskModal">
+        <div class="modal-content">
+            <span class="close" onclick="document.querySelector('.modal').style.display='none'">&times;</span>
+            <h2>Add New Task</h2>
+            
+            <form action="/add" method="POST" class="task-form">
+                <div class="form-group">
+                    <label for="title">Task Title *</label>
+                    <input type="text" id="title" name="title" required autofocus>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="3"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category" name="category">
+                            <option>General</option>
+                            <option>Assignment</option>
+                            <option>Exam</option>
+                            <option>Reading</option>
+                            <option>Project</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="priority">Priority</label>
+                        <select id="priority" name="priority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="due_date">Due Date</label>
+                    <input type="date" id="due_date" name="due_date">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Add Task</button>
+                    <button type="button" class="btn btn-secondary" onclick="document.querySelector('.modal').style.display='none'">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        const modal = document.getElementById('addTaskModal');
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) modal.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

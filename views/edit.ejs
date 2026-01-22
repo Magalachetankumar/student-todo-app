@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Task - Student To-Do App</title>
+    <link rel="stylesheet" href="/dashboard.css">
+</head>
+<body>
+    <div class="edit-container">
+        <div class="edit-card">
+            <h1>Edit Task</h1>
+            
+            <form action="/update/<%= todo.id %>" method="POST" class="task-form">
+                <div class="form-group">
+                    <label for="title">Task Title *</label>
+                    <input type="text" id="title" name="title" value="<%= todo.title %>" required autofocus>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="4"><%= todo.description || '' %></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category" name="category">
+                            <option <%= todo.category === 'General' ? 'selected' : '' %>>General</option>
+                            <option <%= todo.category === 'Assignment' ? 'selected' : '' %>>Assignment</option>
+                            <option <%= todo.category === 'Exam' ? 'selected' : '' %>>Exam</option>
+                            <option <%= todo.category === 'Reading' ? 'selected' : '' %>>Reading</option>
+                            <option <%= todo.category === 'Project' ? 'selected' : '' %>>Project</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="priority">Priority</label>
+                        <select id="priority" name="priority">
+                            <option value="low" <%= todo.priority === 'low' ? 'selected' : '' %>>Low</option>
+                            <option value="medium" <%= todo.priority === 'medium' ? 'selected' : '' %>>Medium</option>
+                            <option value="high" <%= todo.priority === 'high' ? 'selected' : '' %>>High</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="due_date">Due Date</label>
+                    <input type="date" id="due_date" name="due_date" value="<%= todo.due_date || '' %>">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Update Task</button>
+                    <a href="/dashboard" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <style>
+        .edit-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .edit-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .edit-card h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+    </style>
+</body>
+</html>

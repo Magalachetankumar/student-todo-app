@@ -1,0 +1,27 @@
+{
+  "name": "simple-express-app",
+  "version": "1.0.0",
+  "description": "A simple Express.js application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "express",
+    "node",
+    "ejs",
+    "todo"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.6.1",
+    "ejs": "^3.1.10",
+    "express": "^4.18.2",
+    "express-session": "^1.19.0",
+    "nodemon": "^3.1.11",
+    "sqlite3": "^5.1.7"
+  }
+}
